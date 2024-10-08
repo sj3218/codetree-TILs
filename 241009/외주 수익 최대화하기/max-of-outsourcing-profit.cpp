@@ -22,12 +22,12 @@ int recursive(int current_x, int total_time, int total_pay)
     int pay = 0;
     int ans = total_pay;
 
-    if(current_x == n)
+    if(current_x >= n)
     {
         return ans;
     }
 
-    for(int i = current_x + total_time; i < n; ++i)
+    for(int i = current_x; i < n; ++i)
     {
         time = total_time + working[i].first;
         pay = total_pay + working[i].second;
@@ -37,7 +37,7 @@ int recursive(int current_x, int total_time, int total_pay)
             continue;
         }
 
-        ans = max(ans, recursive(i + 1, time, pay));
+        ans = max(ans, recursive(i+ working[i].first, time, pay));
     }
 
     return ans;
@@ -50,7 +50,7 @@ int main() {
 
     for(int i = 0; i< n; ++i)
     {
-        ans = max(ans, recursive(i, working[i].first, working[i].second));    
+        ans = max(ans, recursive(i +working[i].first, working[i].first, working[i].second));    
     }
     cout << ans;
     return 0;
