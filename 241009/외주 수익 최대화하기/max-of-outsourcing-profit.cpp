@@ -3,16 +3,16 @@
 using namespace std;
 
 int n;
-vector<pair<int,int>> working;
+vector<pair<int, int>> working;
 
 void input()
 {
     cin >> n;
     int time, pay;
-    for(int i = 0; i< n; ++i)
+    for (int i = 0; i < n; ++i)
     {
         cin >> time >> pay;
-        working.push_back({time, pay});
+        working.push_back({ time, pay });
     }
 }
 
@@ -22,22 +22,26 @@ int recursive(int current_x, int total_time, int total_pay)
     int pay = 0;
     int ans = total_pay;
 
-    if(current_x >= n)
+    if (current_x >= n)
     {
         return ans;
     }
 
-    for(int i = current_x; i < n; ++i)
+    for (int i = current_x; i < n; ++i)
     {
         time = total_time + working[i].first;
         pay = total_pay + working[i].second;
 
-        if(time > n)
+        if (time > n)
+        {
+            continue;
+        }
+        if (n - i < working[i].first)
         {
             continue;
         }
 
-        ans = max(ans, recursive(i+ working[i].first, time, pay));
+        ans = max(ans, recursive(i + working[i].first, time, pay));
     }
 
     return ans;
@@ -48,9 +52,13 @@ int main() {
     input();
     int ans = 0;
 
-    for(int i = 0; i< n; ++i)
+    for (int i = 0; i < n; ++i)
     {
-        ans = max(ans, recursive(i +working[i].first, working[i].first, working[i].second));    
+        if (n - i < working[i].first)
+        {
+            continue;
+        }
+        ans = max(ans, recursive(i + working[i].first, working[i].first, working[i].second));
     }
     cout << ans;
     return 0;
