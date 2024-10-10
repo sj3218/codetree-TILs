@@ -169,7 +169,8 @@ bool bfs(int target_x, int target_y, vector<vector<pair<int, int>>>& parent_node
     bool is_possible = false;
     queue<pair<int, int>> q;
     q.push({ attack_tower_x, attack_tower_y });
-
+    parent_nodes[attack_tower_x][attack_tower_y] = {attack_tower_x,attack_tower_y};
+    
     int x, y;
 
     while (!q.empty())
@@ -297,6 +298,9 @@ void Bomb(int target_x, int target_y)
         {
             continue;
         }
+
+        if(nx == attack_tower_x && ny == attack_tower_y)
+            continue;
 
         map[nx][ny] -= less_power;
         cannot_repairing_tower[nx][ny] = true;
