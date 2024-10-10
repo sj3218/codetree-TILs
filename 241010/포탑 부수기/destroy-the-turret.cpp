@@ -133,11 +133,15 @@ pair<int,int> FindPowerfulTower()
         for(int j = 0; j<M; ++j)
         {
             current_power = map[i][j];
-            if(map[i][j] == 0)
+            if(current_power == 0)
                 continue;
             
+
             if(current_power > power)
             {
+                if(i == attack_tower_x && j == attack_tower_y)
+                    continue;
+                    
                 x = i;
                 y = j;
                 power = current_power;
