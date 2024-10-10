@@ -17,7 +17,7 @@ void Input()
     cin >> N >> M >> K;
 
     map.assign(N, vector<int>(M, 0));
-    attack_stack.assign(N, vector<int>(M, 0));
+    attack_stack.assign(N, vector<int>(M, -1));
     cannot_repairing_tower.assign(N, vector<bool>(M, false));
     attack_tower_x = INT_MAX;
     int power;
