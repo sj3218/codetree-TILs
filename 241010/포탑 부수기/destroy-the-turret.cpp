@@ -141,7 +141,7 @@ pair<int,int> FindPowerfulTower()
             {
                 if(i == attack_tower_x && j == attack_tower_y)
                     continue;
-                    
+
                 x = i;
                 y = j;
                 power = current_power;
@@ -360,6 +360,8 @@ int main() {
         RepairTower();
     }
 
+    attack_tower_x = -1;
+    attack_tower_y = -1;
     pair<int,int> powerful_tower = FindPowerfulTower();
     cout<<map[powerful_tower.first][powerful_tower.second];
     return 0;
