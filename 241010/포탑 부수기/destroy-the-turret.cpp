@@ -22,13 +22,13 @@ void Input()
     attack_tower_x = INT_MAX;
     int power;
 
-    for(int i = 0; i< N; ++i)
+    for (int i = 0; i < N; ++i)
     {
-        for(int j = 0; j< M; ++j)
+        for (int j = 0; j < M; ++j)
         {
             cin >> power;
             map[i][j] = power;
-            if(power == 0)
+            if (power == 0)
             {
                 ++destroied_tower_cnt;
             }
@@ -38,27 +38,27 @@ void Input()
 
 bool CurrentTowerIsWeaker(int x, int y, int cx, int cy)
 {
-    if(map[x][y] > map[cx][cy])
+    if (map[x][y] > map[cx][cy])
         return true;
 
-    if(map[x][y] == map[cx][cy])
+    if (map[x][y] == map[cx][cy])
     {
-        if(attack_stack[x][y] < attack_stack[cx][cy])
+        if (attack_stack[x][y] < attack_stack[cx][cy])
         {
             //attack at latest
             return true;
         }
 
-        if(attack_stack[x][y] == attack_stack[cx][cy])
+        if (attack_stack[x][y] == attack_stack[cx][cy])
         {
-            if(x + y < cx + cy)
+            if (x + y < cx + cy)
             {
                 //sum of the N and M is bigger one
                 return true;
             }
-            else if(x + y == cx + cy)
+            else if (x + y == cx + cy)
             {
-                if(y < cy)
+                if (y < cy)
                 {
                     //column bigger one
                     return true;
@@ -72,74 +72,73 @@ bool CurrentTowerIsWeaker(int x, int y, int cx, int cy)
 
 void SelectAttackTower()
 {
-    for(int i = 0; i< N; ++i)
+    for (int i = 0; i < N; ++i)
     {
-        for(int j = 0; j < M; ++j)
+        for (int j = 0; j < M; ++j)
         {
-            if(map[i][j] == 0)
+            if (map[i][j] == 0)
             {
                 continue;
             }
 
-            if(attack_tower_x == INT_MAX)
+            if (attack_tower_x == INT_MAX)
             {
                 attack_tower_x = i;
                 attack_tower_y = j;
                 continue;
             }
 
-            if(CurrentTowerIsWeaker(attack_tower_x, attack_tower_y, i, j))
+            if (CurrentTowerIsWeaker(attack_tower_x, attack_tower_y, i, j))
             {
-                attack_tower_x =i;
-                attack_tower_y =j;
+                attack_tower_x = i;
+                attack_tower_y = j;
             }
         }
     }
 
-    attack_stack[attack_tower_x][attack_tower_y]++;
 }
 
 bool CurrentTowerIsPowerful(int x, int y, int cx, int cy)
 {
-    if(attack_stack[x][y] > attack_stack[cx][cy])
+    if (attack_stack[x][y] > attack_stack[cx][cy])
+    {
+        return true;
+    }
+
+    if (attack_stack[x][y] == attack_stack[cx][cy])
+    {
+        if (x + y > cx + cy)
         {
             return true;
         }
-
-        if(attack_stack[x][y] == attack_stack[cx][cy])
+        else if (x + y == cx + cy)
         {
-            if(x + y > cx + cy)
+            if (y > cy)
             {
                 return true;
             }
-            else if(x + y == cx + cy)
-            {
-                if(y > cy)
-                {
-                    return true;
-                }
-            }
         }
+    }
     return false;
 }
 
-pair<int,int> FindPowerfulTower()
+pair<int, int> FindPowerfulTower()
 {
     int x, y;
     int power = 0;
     int current_power = 0;
-    for(int i = 0; i< N; ++i)
+    for (int i = 0; i < N; ++i)
     {
-        for(int j = 0; j<M; ++j)
+        for (int j = 0; j < M; ++j)
         {
             current_power = map[i][j];
-            if(current_power == 0)
+            if (current_power == 0)
                 continue;
-            
 
-            if(current_power > power)
+
+            if (current_power > power)
             {
-                if(i == attack_tower_x && j == attack_tower_y)
+                if (i == attack_tower_x && j == attack_tower_y)
                     continue;
 
                 x = i;
@@ -147,10 +146,10 @@ pair<int,int> FindPowerfulTower()
                 power = current_power;
                 continue;
             }
-            
-            if(current_power == power)
+
+            if (current_power == power)
             {
-                if(CurrentTowerIsPowerful(x, y, i, j))
+                if (CurrentTowerIsPowerful(x, y, i, j))
                 {
                     x = i;
                     y = j;
@@ -159,61 +158,61 @@ pair<int,int> FindPowerfulTower()
             }
         }
     }
-    return {x,y};
+    return { x,y };
 }
 
-bool bfs(int target_x, int target_y, vector<vector<pair<int,int>>>& parent_nodes)
+bool bfs(int target_x, int target_y, vector<vector<pair<int, int>>>& parent_nodes)
 {
-    int dx[4] = {0,1,0,-1};
-    int dy[4] = {1,0,-1,0};
+    int dx[4] = { 0,1,0,-1 };
+    int dy[4] = { 1,0,-1,0 };
 
     bool is_possible = false;
-    queue<pair<int,int>> q;
-    q.push({attack_tower_x, attack_tower_y});
+    queue<pair<int, int>> q;
+    q.push({ attack_tower_x, attack_tower_y });
 
     int x, y;
 
-    while(!q.empty())
+    while (!q.empty())
     {
         x = q.front().first;
         y = q.front().second;
         q.pop();
 
-        if(x == target_x && y == target_y)
+        if (x == target_x && y == target_y)
         {
             is_possible = true;
             break;
         }
 
-        for(int i =0;i< 4; ++i)
+        for (int i = 0; i < 4; ++i)
         {
             int nx = x + dx[i];
             int ny = y + dy[i];
 
-            if(nx < 0)
-                nx = N -1;
-            else if(nx >= N)
+            if (nx < 0)
+                nx = N - 1;
+            else if (nx >= N)
                 nx = 0;
 
-            if(ny < 0)
-                ny= M -1;
-            else if(ny >= M)
+            if (ny < 0)
+                ny = M - 1;
+            else if (ny >= M)
                 ny = 0;
 
-        
-            if(map[nx][ny] == 0)
+
+            if (map[nx][ny] == 0)
             {
                 continue;
             }
 
-            if(parent_nodes[nx][ny].first != -1 && parent_nodes[nx][ny].second != -1)
+            if (parent_nodes[nx][ny].first != -1 && parent_nodes[nx][ny].second != -1)
             {
                 //is already visited
                 continue;
             }
 
-            q.push({nx,ny});
-            parent_nodes[nx][ny] = {x,y};
+            q.push({ nx,ny });
+            parent_nodes[nx][ny] = { x,y };
         }
     }
     return is_possible;
@@ -221,34 +220,34 @@ bool bfs(int target_x, int target_y, vector<vector<pair<int,int>>>& parent_nodes
 
 bool Reizer(int target_x, int target_y)
 {
-    vector<vector<pair<int,int>>> parent_nodes(N, vector<pair<int,int>>(M, {-1,-1}));
-    
-    if(bfs(target_x, target_y, parent_nodes))
+    vector<vector<pair<int, int>>> parent_nodes(N, vector<pair<int, int>>(M, { -1,-1 }));
+
+    if (bfs(target_x, target_y, parent_nodes))
     {
         //attack tower following the parent node
         int parent_x = parent_nodes[target_x][target_y].first;
         int parent_y = parent_nodes[target_x][target_y].second;
         int power = map[attack_tower_x][attack_tower_y];
-        int less_power = power /2;
+        int less_power = power / 2;
 
         map[target_x][target_y] -= power;
-        if(map[target_x][target_y] <= 0)
+        if (map[target_x][target_y] <= 0)
         {
             map[target_x][target_y] = 0;
             destroied_tower_cnt++;
         }
 
-        while(true)
+        while (true)
         {
-            if(parent_x == attack_tower_x && parent_y == attack_tower_y)
+            if (parent_x == attack_tower_x && parent_y == attack_tower_y)
             {
                 break;
             }
-            
+
             map[parent_x][parent_y] -= less_power;
             cannot_repairing_tower[parent_x][parent_y] = true;
-            
-            if(map[parent_x][parent_y] <= 0)
+
+            if (map[parent_x][parent_y] <= 0)
             {
                 map[parent_x][parent_y] = 0;
                 ++destroied_tower_cnt;
@@ -266,38 +265,43 @@ bool Reizer(int target_x, int target_y)
 
 void Bomb(int target_x, int target_y)
 {
-    int dx[8] = {-1,-1,-1,0,0,1,1,1};
-    int dy[8] = {-1,0,1,-1,1,-1,0,1};
+    int dx[8] = { -1,-1,-1,0,0,1,1,1 };
+    int dy[8] = { -1,0,1,-1,1,-1,0,1 };
 
     int power = map[attack_tower_x][attack_tower_y];
-    int less_power = power/2;
+    int less_power = power / 2;
 
     map[target_x][target_y] -= power;
 
-    if(map[target_x][target_y] <= 0)
+    if (map[target_x][target_y] <= 0)
     {
         map[target_x][target_y] = 0;
         ++destroied_tower_cnt;
     }
 
-    for(int i = 0; i < 8; ++i)
+    for (int i = 0; i < 8; ++i)
     {
         int nx = target_x + dx[i];
         int ny = target_y + dy[i];
 
-        if(nx < 0)
-            nx = N-1;
-        if(ny < 0)
-            ny = M -1;
-        if(nx >= N)
+        if (nx < 0)
+            nx = N - 1;
+        if (ny < 0)
+            ny = M - 1;
+        if (nx >= N)
             nx = 0;
-        if(ny >= M)
+        if (ny >= M)
             ny = 0;
+
+        if (map[nx][ny] == 0)
+        {
+            continue;
+        }
 
         map[nx][ny] -= less_power;
         cannot_repairing_tower[nx][ny] = true;
 
-        if(map[nx][ny] <= 0)
+        if (map[nx][ny] <= 0)
         {
             map[nx][ny] = 0;
             ++destroied_tower_cnt;
@@ -307,30 +311,32 @@ void Bomb(int target_x, int target_y)
 
 void Attack()
 {
-    pair<int,int> target = FindPowerfulTower();
-    
+    pair<int, int> target = FindPowerfulTower();
+    //cout<<"target tower: "<<target.first<<", "<< target.second<<endl;
+
     cannot_repairing_tower[target.first][target.second] = true;
     cannot_repairing_tower[attack_tower_x][attack_tower_y] = true;
 
-    if(!Reizer(target.first, target.second))
+    if (!Reizer(target.first, target.second))
     {
         //attack using bomb
+        //cout<<"using bomb"<<endl;
         Bomb(target.first, target.second);
     }
 }
 
 void RepairTower()
 {
-    for(int i = 0; i< N; ++i)
+    for (int i = 0; i < N; ++i)
     {
-        for(int j = 0; j< M; ++j)
+        for (int j = 0; j < M; ++j)
         {
-            if(map[i][j] == 0)
+            if (map[i][j] == 0)
             {
                 continue;
             }
 
-            if(cannot_repairing_tower[i][j] == true)
+            if (cannot_repairing_tower[i][j] == true)
             {
                 continue;
             }
@@ -344,17 +350,18 @@ int main() {
     // 여기에 코드를 작성해주세요.
     Input();
 
-    for(int i = 0; i< K; ++i)
+    for (int i = 0; i < K; ++i)
     {
-        if(destroied_tower_cnt - 1 == N*M)
+        if (destroied_tower_cnt + 1 == N * M)
         {
             break;
         }
 
         cannot_repairing_tower.assign(N, vector<bool>(M, false));
-        
+
         SelectAttackTower();
         map[attack_tower_x][attack_tower_y] += (N + M);
+        attack_stack[attack_tower_x][attack_tower_y] = i;
 
         Attack();
         RepairTower();
@@ -362,7 +369,7 @@ int main() {
 
     attack_tower_x = -1;
     attack_tower_y = -1;
-    pair<int,int> powerful_tower = FindPowerfulTower();
-    cout<<map[powerful_tower.first][powerful_tower.second];
+    pair<int, int> powerful_tower = FindPowerfulTower();
+    cout << map[powerful_tower.first][powerful_tower.second];
     return 0;
 }
