@@ -44,6 +44,7 @@ bool IsValid(int x, int y)
 
 void Growing()
 {
+    near_empty_count.assign(N, vector<int>(N,0));
     for(int i = 0; i< N; ++i)
     {
         for(int j = 0; j< N; ++j)
